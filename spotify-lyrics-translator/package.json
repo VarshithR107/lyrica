@@ -1,0 +1,18 @@
+{
+  "name": "spotify-lyrics-translator",
+  "version": "1.0.0",
+  "description": "Lyrica - Spotify Premium Synced Lyrics Translator Clone",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "spotify",
+    "lyrics",
+    "translator",
+    "audio",
+    "synced-lyrics"
+  ],
+  "author": "Lyrica Dev Team",
+  "license": "MIT"
+}

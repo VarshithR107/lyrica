@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>Lyrica Diag</title></head>
+<body style="background:#0a0a18;color:#1ed760;font-family:system-ui;padding:40px;font-size:20px">
+  <h1 style="color:#fff;font-size:36px;margin:0 0 20px 0">🎵 Lyrica server is alive</h1>
+  <p>If you can read this, your browser CAN reach localhost:8080.</p>
+  <p>That means the main app should also render. <br>
+     <a href="/" style="color:#1ed760">Click here to go to the main app</a>
+     and immediately press <b style="color:#fff">Ctrl + Shift + R</b> to bypass cache.</p>
+  <p id="api" style="margin-top:30px;padding:14px;background:#181828;border-radius:8px">Testing /api/yt-search…</p>
+  <script>
+    fetch('/api/yt-search?q=test+song').then(r=>r.json()).then(d=>{
+      document.getElementById('api').innerHTML =
+        '<b>API result:</b> <code>'+JSON.stringify(d)+'</code> — proxy works.';
+    }).catch(e=>{
+      document.getElementById('api').innerHTML = '<b>API ERROR:</b> '+e.message;
+    });
+  </script>
+</body>
+</html>

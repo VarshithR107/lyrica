@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Lyrica — Premium Music & Lyrics Translator</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ─── SIDEBAR ───────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <span class="logo-mark">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <defs>
+              <linearGradient id="lyricaGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" class="lg-stop-1"/>
+                <stop offset="1" class="lg-stop-2"/>
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#lyricaGrad)"/>
+            <g fill="#fff" class="logo-bars">
+              <rect x="12" y="19" width="4.2" height="10" rx="2.1"/>
+              <rect x="19" y="13" width="4.2" height="22" rx="2.1"/>
+              <rect x="26" y="16" width="4.2" height="16" rx="2.1"/>
+              <rect x="33" y="21" width="4.2" height="6"  rx="2.1"/>
+            </g>
+          </svg>
+        </span>
+        <span class="logo-word">Lyrica</span>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-view="home">
+          <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>
+          Home
+        </button>
+        <button class="nav-btn" data-view="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          Search
+        </button>
+        <button class="nav-btn" data-view="library">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5zM20 22H6.5a2.5 2.5 0 010-5H20"/></svg>
+          Your Library
+        </button>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section-title">
+        PLAYLISTS
+        <button class="sidebar-create-btn" id="sidebarCreateBtn" title="Create playlist">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="sidebar-playlists" id="sidebarPlaylists">
+        <button class="sidebar-playlist-item" data-action="liked">
+          <span class="liked-icon-small">♥</span> Liked Songs <span class="liked-count" id="sidebarLikedCount">0</span>
+        </button>
+        <button class="sidebar-playlist-item" data-action="queue">
+          <span>📋</span> Play Queue
+        </button>
+        <!-- user playlists injected here -->
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ─── MAIN CONTENT ──────────────────────────────── -->
+  <main class="main">
+
+    <!-- Header -->
+    <header class="header" id="header">
+      <div class="header-left">
+        <button class="nav-toggle" id="navToggle" title="Menu" aria-label="Open menu">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="header-nav-arrows">
+          <button class="icon-btn" id="historyBack" disabled><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="icon-btn" id="historyFwd" disabled><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <input type="text" class="search-input" id="globalSearch" placeholder="What do you want to listen to?" style="display:none;">
+        <h1 class="page-title" id="pageTitle">Good evening</h1>
+      </div>
+      <div class="header-right">
+        <button class="profile-pill" id="profileBtn" title="Profile & settings">
+          <span class="avatar-ring"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80&auto=format&fit=crop" alt="User" class="user-avatar" id="headerAvatar"></span>
+          <span class="user-name" id="userName">Srinivas R.</span>
+          <svg class="profile-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+
+        <!-- Profile dropdown -->
+        <div class="profile-menu" id="profileMenu">
+          <div class="pm-head">
+            <span class="avatar-ring lg"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&q=80&auto=format&fit=crop" alt="User" id="pmAvatar"></span>
+            <div class="pm-head-meta">
+              <div class="pm-name"><span id="pmName">Srinivas R.</span> <span class="pm-badge">PREMIUM</span></div>
+              <div class="pm-email" id="pmEmail">you@lyrica.app</div>
+            </div>
+          </div>
+
+          <div class="pm-divider"></div>
+
+          <button class="pm-item" data-pm="editprofile">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+            Edit profile
+          </button>
+          <button class="pm-item" data-pm="library">
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"/></svg>
+            Liked Songs <span class="pm-count" id="pmLikedCount">0</span>
+          </button>
+          <button class="pm-item" data-pm="recent">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+            Recently played
+          </button>
+          <button class="pm-item" data-pm="queue">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="16" y2="6"/><line x1="3" y1="12" x2="16" y2="12"/><line x1="3" y1="18" x2="12" y2="18"/><polygon points="18 14 22 17 18 20"/></svg>
+            Play Queue
+          </button>
+          <button class="pm-item" data-pm="create">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New playlist
+          </button>
+
+          <div class="pm-divider"></div>
+
+          <button class="pm-item" data-pm="smartmix">
+            <svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            Smart Mix <span class="pm-tag">NEW</span>
+          </button>
+          <button class="pm-item" data-pm="stats">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Listening stats
+          </button>
+          <button class="pm-item" data-pm="sleep">
+            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            Sleep timer
+          </button>
+
+          <div class="pm-divider"></div>
+
+          <button class="pm-item" data-pm="settings">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Settings
+          </button>
+          <button class="pm-item" data-pm="voice">
+            <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+            Voice assistant
+          </button>
+          <button class="pm-item" data-pm="export">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export backup
+          </button>
+
+          <div class="pm-divider"></div>
+
+          <button class="pm-item pm-muted" data-pm="about">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12" y2="8"/></svg>
+            About Lyrica
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable content area -->
+    <div class="content-scroll" id="contentScroll">
+
+      <!-- HOME VIEW -->
+      <section class="view active" id="view-home">
+        <div class="recent-section" id="recentSection" style="display:none;">
+          <div class="recent-head">
+            <h2 class="section-title">Recently played</h2>
+            <button class="recent-clear" id="recentClearBtn" title="Clear history">Clear</button>
+          </div>
+          <div class="card-grid" id="recentGrid"></div>
+        </div>
+        <div class="quick-picks" id="quickPicks"></div>
+        <h2 class="section-title" id="featuredTitle">Featured For You</h2>
+        <div class="card-grid" id="featuredGrid"></div>
+        <h2 class="section-title">Browse Genres</h2>
+        <div class="genre-grid" id="genreGrid"></div>
+      </section>
+
+      <!-- SEARCH VIEW -->
+      <section class="view" id="view-search">
+        <div class="search-empty" id="searchEmpty">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <h3>Search Lyrica</h3>
+          <p>Find songs, artists, and translated lyrics.</p>
+          <div class="recent-searches" id="recentSearches" style="display:none;"></div>
+        </div>
+
+        <!-- Smart results: Top result + Songs list -->
+        <div class="search-smart" id="searchSmart" style="display:none;">
+          <div class="search-top-col">
+            <h2 class="section-title">Top result</h2>
+            <div class="top-result-card" id="topResultCard"></div>
+          </div>
+          <div class="search-songs-col">
+            <h2 class="section-title">Songs</h2>
+            <div class="song-list" id="songList"></div>
+          </div>
+        </div>
+
+        <h2 class="section-title" id="searchMoreTitle" style="display:none;">More like this</h2>
+        <div class="card-grid" id="searchResults" style="display:none;"></div>
+      </section>
+
+      <!-- PLAYLIST VIEW -->
+      <section class="view" id="view-playlist">
+        <div class="playlist-hero">
+          <div class="playlist-cover" id="playlistCover"></div>
+          <div class="playlist-hero-meta">
+            <span class="playlist-kicker">PLAYLIST</span>
+            <h1 class="playlist-name" id="playlistName"></h1>
+            <p class="playlist-sub" id="playlistSub"></p>
+            <div class="playlist-actions">
+              <button class="playlist-play-btn" id="playlistPlayBtn">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21"/></svg> Play
+              </button>
+              <button class="playlist-rename-btn" id="playlistRenameBtn">Rename</button>
+              <button class="playlist-delete-btn" id="playlistDeleteBtn">Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="playlist-empty" id="playlistEmpty" style="display:none;">
+          <div class="empty-heart">🎶</div>
+          <h3>This playlist is empty</h3>
+          <p>Use the ⋯ menu on any song to add it here.</p>
+        </div>
+        <div class="song-list" id="playlistTracks"></div>
+      </section>
+
+      <!-- LIBRARY VIEW -->
+      <section class="view" id="view-library">
+        <div class="library-empty" id="libraryEmpty">
+          <div class="empty-heart">♥</div>
+          <h3>Songs You Love</h3>
+          <p>Like songs to build your personal library.</p>
+        </div>
+        <div class="card-grid" id="libraryGrid" style="display:none;"></div>
+      </section>
+
+      <!-- QUEUE VIEW -->
+      <section class="view" id="view-queue">
+        <h2 class="section-title">Play Queue</h2>
+        <div class="queue-list" id="queueList"></div>
+      </section>
+
+      <!-- NOW PLAYING / LYRICS VIEW -->
+      <section class="view" id="view-nowplaying">
+        <div class="np-layout">
+          <!-- Left: Art + Info -->
+          <div class="np-left">
+            <button class="np-back-btn" id="npBackBtn">
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Back
+            </button>
+            <div class="np-art-container" id="npArtContainer">
+              <div id="ytPlayer"></div>
+              <div class="np-art-placeholder" id="npArtPlaceholder">
+                <span>Loading player…</span>
+              </div>
+            </div>
+            <div class="np-info">
+              <h2 class="np-title" id="npTitle"></h2>
+              <p class="np-artist" id="npArtist"></p>
+              <button class="heart-btn" id="npLikeBtn" title="Like">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+              <button class="np-add-btn" id="npAddBtn" title="Add to playlist">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </button>
+            </div>
+            <div class="np-badges">
+              <span class="badge badge-green">✓ Ad-Free</span>
+              <span class="badge badge-green">↓ Offline</span>
+              <span class="badge badge-purple" id="fidelityBadge">320kbps</span>
+            </div>
+            <!-- Visualizer -->
+            <div class="visualizer" id="visualizer"></div>
+          </div>
+
+          <!-- Right: Lyrics Engine -->
+          <div class="np-right">
+            <div class="lyrics-toolbar">
+              <div class="lyrics-toolbar-left">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                <span>Lyrics</span>
+              </div>
+              <div class="lyrics-toolbar-right">
+                <!-- Karaoke: listen to the mic and score pronunciation word-by-word -->
+                <button class="karaoke-btn" id="karaokeBtn" title="Karaoke — sing along and get scored on each word">
+                  <svg class="kb-icon" viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V6a3 3 0 00-6 0v5a3 3 0 003 3z"/><path d="M19 11a7 7 0 01-14 0M12 18v3"/></svg>
+                  <span class="kb-dot"></span>
+                  <span>Karaoke</span>
+                </button>
+                <!-- Fancy translate button (outside) -->
+                <button class="translate-btn" id="translateBtn" title="Translate lyrics">
+                  <svg class="tb-icon" viewBox="0 0 24 24"><path d="M4 5h7M9 3v2c0 4.4-2.7 8-6 9"/><path d="M5 9c0 2.7 2.7 5 6 6"/><path d="M14 19l3-7 3 7M14.8 17h4.4"/></svg>
+                  <span id="translateLabel">Translate</span>
+                  <svg class="tb-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <!-- Translate dropdown: language + mode -->
+                <div class="lyrics-menu translate-menu" id="translateMenu">
+                  <div class="lm-detected" id="lmDetected" style="display:none;"></div>
+                  <div class="lm-section">
+                    <div class="lm-label">Translate to
+                      <button class="lm-fav" id="langFavToggle" title="Save to quick languages" aria-label="Save language">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9"/></svg>
+                      </button>
+                    </div>
+                    <select id="langSelect" class="lm-select"></select>
+                    <div class="lm-fav-chips" id="langFavChips" style="display:none;"></div>
+                  </div>
+                  <div class="lm-section">
+                    <div class="lm-label">Show as</div>
+                    <div class="lm-mode-group" id="modeGroup">
+                      <button class="lm-mode-btn active" data-mode="translate" title="The meaning in your chosen language">Meaning</button>
+                      <button class="lm-mode-btn" data-mode="transliterate" title="How it's pronounced, in simple English letters">Sounds</button>
+                      <button class="lm-mode-btn" data-mode="both" title="Meaning and pronunciation together">Both</button>
+                    </div>
+                    <div class="lm-hint" id="lmModeHint"></div>
+                  </div>
+                  <div class="lm-section">
+                    <label class="lm-toggle">
+                      <span>Show original lyrics too</span>
+                      <input type="checkbox" id="dualLangBtn" checked>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- 3-dots menu: sync offset lives here now -->
+                <button class="kebab-btn" id="lyricsMenuBtn" title="More options">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+                </button>
+                <div class="lyrics-menu" id="lyricsMenu">
+                  <div class="lm-section">
+                    <div class="lm-label">Sync offset <span class="lm-offset-val" id="offsetVal">0.0s</span></div>
+                    <div class="lm-offset-row">
+                      <button class="lm-offset-step" data-step="-2">−2s</button>
+                      <button class="lm-offset-step" data-step="-0.5">−0.5</button>
+                      <button class="lm-offset-step" data-step="-0.1">−0.1</button>
+                      <button class="lm-offset-step" data-step="0.1">+0.1</button>
+                      <button class="lm-offset-step" data-step="0.5">+0.5</button>
+                      <button class="lm-offset-step" data-step="2">+2s</button>
+                      <button class="lm-offset-reset" data-reset="1">Reset</button>
+                    </div>
+                    <input type="range" class="lm-offset-slider" id="offsetSlider" min="-10" max="10" step="0.1" value="0" aria-label="Lyric sync offset">
+                    <div class="lm-offset-hint">Lyrics late? Slide right. Early? Slide left. Tip: tap <b>[</b> / <b>]</b> to nudge live.</div>
+                  </div>
+                  <div class="lm-section lm-tools">
+                    <button class="lm-tool" data-tool="copy">
+                      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>
+                      Copy lyrics
+                    </button>
+                    <button class="lm-tool" data-tool="lrc">
+                      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      Download .lrc
+                    </button>
+                    <button class="lm-tool" data-tool="fullscreen">
+                      <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+                      Fullscreen lyrics
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Karaoke score HUD (hidden until karaoke mode is on) -->
+            <div class="karaoke-hud" id="karaokeHud">
+              <span class="kh-mic">🎤</span>
+              <span class="kh-line" id="khLine">Sing along…</span>
+              <span class="kh-score" id="khScore">100%</span>
+            </div>
+            <div class="lyrics-scroll" id="lyricsScroll">
+              <div class="lyrics-inner" id="lyricsInner"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- Scrim behind the mobile nav drawer -->
+<div class="nav-scrim" id="navScrim"></div>
+
+<!-- ─── PLAYER BAR (BOTTOM) ─────────────────────────── -->
+<footer class="player-bar" id="playerBar">
+  <div class="pb-left is-empty" id="pbLeft">
+    <img id="pbArt" class="pb-art" src="" alt="">
+    <div class="pb-meta">
+      <div class="pb-title" id="pbTitle">Select a song</div>
+      <div class="pb-artist" id="pbArtist"></div>
+    </div>
+    <button class="heart-btn heart-sm" id="pbLikeBtn">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </button>
+  </div>
+
+  <div class="pb-center">
+    <div class="pb-controls">
+      <button class="ctrl-btn" id="btnShuffle" title="Shuffle"><svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg></button>
+      <button class="ctrl-btn" id="btnPrev" title="Previous"><svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+      <button class="ctrl-btn play-btn" id="btnPlay" title="Play"><svg viewBox="0 0 24 24" id="playIcon"><polygon points="5 3 19 12 5 21"/></svg></button>
+      <button class="ctrl-btn" id="btnNext" title="Next"><svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+      <button class="ctrl-btn" id="btnRepeat" title="Repeat"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></button>
+    </div>
+    <div class="pb-timeline">
+      <span class="time-label" id="timeCurrent">0:00</span>
+      <div class="progress-track" id="progressTrack">
+        <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-thumb" id="progressThumb"></div>
+      </div>
+      <span class="time-label" id="timeTotal">0:00</span>
+    </div>
+  </div>
+
+  <div class="pb-right">
+    <div class="sleep-wrap">
+      <button class="ctrl-btn" id="btnSleep" title="Sleep timer">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <div class="sleep-menu" id="sleepMenu">
+        <div class="sleep-title">Sleep timer</div>
+        <button class="sleep-opt on" data-sleep="off">Off</button>
+        <button class="sleep-opt" data-sleep="5">5 minutes</button>
+        <button class="sleep-opt" data-sleep="15">15 minutes</button>
+        <button class="sleep-opt" data-sleep="30">30 minutes</button>
+        <button class="sleep-opt" data-sleep="60">1 hour</button>
+        <button class="sleep-opt" data-sleep="endoftrack">End of track</button>
+      </div>
+    </div>
+    <button class="ctrl-btn" id="btnLyrics" title="Lyrics"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
+    <button class="ctrl-btn" id="btnVolume" title="Volume"><svg viewBox="0 0 24 24" id="volIcon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg></button>
+    <div class="volume-track" id="volumeTrack">
+      <div class="volume-fill" id="volumeFill"></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Voice assistant -->
+<button class="voice-fab" id="voiceFab" title="Voice assistant (say 'play', 'next', 'translate to spanish'…)">
+  <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+</button>
+<div class="voice-panel" id="voicePanel">
+  <div class="voice-orb" id="voiceOrb"><span></span><span></span><span></span><span></span></div>
+  <div class="voice-status" id="voiceStatus">Tap the mic, then say one command</div>
+  <div class="voice-heard" id="voiceHeard"></div>
+  <div class="voice-hints">Talk naturally — “put on believer”, “skip this”, “turn it up”, “what's this song?”, “add to queue”, “translate to spanish”, “go back”.</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="toast-icon">✨</span><span id="toastMsg"></span></div>
+
+<!-- Song actions context menu (positioned in JS) -->
+<div class="ctx-menu" id="ctxMenu">
+  <button class="ctx-item ctx-action" id="ctxAddQueue">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="15" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="11" y2="18"/><line x1="18" y1="9" x2="18" y2="19"/><line x1="13" y1="14" x2="23" y2="14"/></svg>
+    <span>Add to queue</span>
+  </button>
+  <button class="ctx-item ctx-action" id="ctxPlayNext">
+    <svg viewBox="0 0 24 24"><polygon points="4 4 14 12 4 20"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+    <span>Play next</span>
+  </button>
+  <div class="ctx-divider"></div>
+  <div class="ctx-header">Add to playlist</div>
+  <div class="ctx-list" id="ctxList"></div>
+  <button class="ctx-new" id="ctxNewPlaylist">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New playlist
+  </button>
+</div>
+
+<!-- Create / rename playlist modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 class="modal-title" id="modalTitle">Create playlist</h3>
+    <input type="text" class="modal-input" id="modalInput" placeholder="Playlist name" maxlength="60">
+    <div class="modal-actions">
+      <button class="modal-cancel" id="modalCancel">Cancel</button>
+      <button class="modal-save" id="modalSave">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit profile modal -->
+<div class="modal-overlay" id="profileEditOverlay">
+  <div class="modal">
+    <div class="settings-head">
+      <h3 class="modal-title">Edit profile</h3>
+      <button class="settings-close" id="profileEditClose" title="Close">
+        <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="pe-body">
+      <div class="pe-avatar-row">
+        <img class="pe-avatar" id="peAvatarPreview" alt="">
+        <label class="pe-field pe-grow">
+          <span>Avatar image URL</span>
+          <input type="text" class="modal-input" id="peAvatar" placeholder="https://…">
+        </label>
+      </div>
+      <label class="pe-field">
+        <span>Display name</span>
+        <input type="text" class="modal-input" id="peName" maxlength="40" placeholder="Your name">
+      </label>
+      <label class="pe-field">
+        <span>Email</span>
+        <input type="text" class="modal-input" id="peEmail" maxlength="80" placeholder="you@example.com">
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="peCancel">Cancel</button>
+      <button class="modal-save" id="peSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Listening stats modal -->
+<div class="modal-overlay" id="statsOverlay">
+  <div class="modal stats-modal">
+    <div class="settings-head">
+      <h3 class="modal-title">Your listening</h3>
+      <button class="settings-close" id="statsClose" title="Close">
+        <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="stats-body" id="statsBody"></div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-overlay" id="settingsOverlay">
+  <div class="modal settings-modal">
+    <div class="settings-head">
+      <h3 class="modal-title">Settings</h3>
+      <button class="settings-close" id="settingsClose" title="Close">
+        <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="settings-body">
+      <div class="set-group">
+        <div class="set-label">Accent theme</div>
+        <div class="set-sub">Give Lyrica its own look.</div>
+        <div class="theme-swatches" id="themeSwatches">
+          <button class="swatch" data-theme="aurora"  style="--s1:#8b5cf6;--s2:#22d3ee" title="Aurora"></button>
+          <button class="swatch" data-theme="sunset"  style="--s1:#fb7185;--s2:#f59e0b" title="Sunset"></button>
+          <button class="swatch" data-theme="emerald" style="--s1:#10b981;--s2:#22d3ee" title="Emerald"></button>
+          <button class="swatch" data-theme="ice"     style="--s1:#38bdf8;--s2:#818cf8" title="Ice"></button>
+          <button class="swatch" data-theme="magma"   style="--s1:#f43f5e;--s2:#a855f7" title="Magma"></button>
+        </div>
+      </div>
+
+      <div class="set-group">
+        <div class="set-label">Lyrics text size</div>
+        <div class="seg" id="lyricSizeSeg">
+          <button data-size="s">Small</button>
+          <button data-size="m" class="on">Medium</button>
+          <button data-size="l">Large</button>
+        </div>
+      </div>
+
+      <div class="set-group set-row">
+        <div>
+          <div class="set-label">Audio visualizer</div>
+          <div class="set-sub">Animated bars on the Now Playing screen.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setVisualizer" checked><span class="switch-track"></span></label>
+      </div>
+
+      <div class="set-group set-row">
+        <div>
+          <div class="set-label">Reduced motion</div>
+          <div class="set-sub">Tone down transitions and animations.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setReduceMotion"><span class="switch-track"></span></label>
+      </div>
+
+      <div class="set-group set-row">
+        <div>
+          <div class="set-label">Spoken replies</div>
+          <div class="set-sub">The voice assistant talks back and briefly lowers the music.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setVoiceFeedback" checked><span class="switch-track"></span></label>
+      </div>
+
+      <div class="set-section-label">Music</div>
+
+      <div class="set-group">
+        <div class="set-label">Music languages</div>
+        <div class="set-sub">Pick one or more — your Home feed blends popular songs from each.</div>
+        <div class="lang-chips" id="setSongLangChips"></div>
+      </div>
+
+      <div class="set-section-label">Lyrics &amp; translation</div>
+
+      <div class="set-group">
+        <div class="set-label">Default lyrics language</div>
+        <div class="set-sub">New songs open already translated to this language.</div>
+        <select class="set-select" id="setDefaultLang"></select>
+      </div>
+
+      <div class="set-group">
+        <div class="set-label">Default translation view</div>
+        <div class="seg" id="setTransModeSeg">
+          <button data-mode="translate" class="on">Translate</button>
+          <button data-mode="transliterate">Sounds</button>
+          <button data-mode="both">Both</button>
+        </div>
+      </div>
+
+      <div class="set-group set-row">
+        <div>
+          <div class="set-label">Show original + translation</div>
+          <div class="set-sub">Display the source line beneath each translated line.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setDualLang" checked><span class="switch-track"></span></label>
+      </div>
+
+      <div class="set-section-label">Playback</div>
+
+      <div class="set-group set-row">
+        <div>
+          <div class="set-label">Autoplay similar songs</div>
+          <div class="set-sub">When the queue ends, keep the music going with related tracks.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setAutoplay"><span class="switch-track"></span></label>
+      </div>
+
+      <div class="set-section-label">Library</div>
+
+      <div class="set-group">
+        <div class="set-label">Restore from backup</div>
+        <div class="set-sub">Merge a Lyrica backup file into your liked songs and playlists.</div>
+        <button class="set-restore-btn" id="setImportBtn">Choose backup file…</button>
+        <input type="file" id="setImportFile" accept="application/json,.json" hidden>
+      </div>
+
+      <div class="set-group">
+        <div class="set-label danger">Danger zone</div>
+        <div class="set-sub">Clears liked songs, playlists, and recently played from this browser.</div>
+        <button class="set-danger-btn" id="clearDataBtn">Clear all my data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
